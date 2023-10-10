@@ -14,18 +14,19 @@ type Tree struct {
 
 // Walk walks the tree t sending all values
 // from the tree to the channel ch.
-func Walk(tr *tree.Tree, ch chan int) {
+func Walk(t *tree.Tree, ch chan int) {
 	defer close(ch)
 	var walker func(*tree.Tree)
-	walker = func(tr *tree.Tree) {
-		if tr == nil {
+	walker = func(t *tree.Tree) {
+		if t == nil {
 			return
+		} else {
+			walker(t.Left)
+			ch <- t.Value
+			walker(t.Right)
 		}
-		walker(tr.Left)
-		ch <- tr.Value
-		walker(tr.Right)
 	}
-	walker(tr)
+	walker(t)
 }
 
 // Same determines whether the trees
